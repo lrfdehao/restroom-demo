@@ -1,10 +1,10 @@
-package domain
+package context
 
 import "fmt"
 
 func HandleError(err error, src string) error {
 	if err != nil {
-		fmt.Println("[ keng demo][ Error] - ", err.Error())
+		fmt.Println("[ toilet demo][ Error] - ", err.Error())
 	}
 	return err
 }
@@ -12,11 +12,11 @@ func HandleError(err error, src string) error {
 var _ error = &ServerError{}
 
 type ServerError struct {
-	Key          string
+	Key          int
 	DefaultError string
 }
 
-func NewError(key string, msg string) *ServerError {
+func NewError(key int, msg string) *ServerError {
 	return &ServerError{
 		Key:          key,
 		DefaultError: msg,

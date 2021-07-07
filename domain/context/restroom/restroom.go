@@ -1,15 +1,11 @@
-package toilet
+package restroom
 
 import (
-	"demo/domain/domain"
-	"demo/domain/domain/vo"
+	"demo/domain/context"
+	"demo/domain/context/vo"
 )
 
-var _ domain.IDomain = new(Toilet)
-
-var (
-	ErrToiletNotFound = domain.NewError("toilet_not_found", "找不到厕所")
-)
+var _ context.IDomain = new(Restroom)
 
 const (
 	male   Gender = 1
@@ -19,21 +15,21 @@ const (
 type (
 	Gender int
 
-	IToilet interface {
+	IRestroom interface {
 		// 新增厕所
-		New(toilet IToilet) Toilet
+		New(ir IRestroom) Restroom
 		// 移除厕所
 		Remove(toiletId int) error
 
 		// 修改厕所性别
-		ChangeGender(toilet int, g Gender) error
+		ChangeGender(restroomId int, g Gender) error
 	}
 
 	IToiletRepo interface {
 	}
 
-	Toilet struct {
-		ToiletId         vo.GenId
+	Restroom struct {
+		RestroomId       vo.GenId
 		Floor            int
 		Address          string
 		Gender           Gender
