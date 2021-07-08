@@ -39,3 +39,21 @@ func SendFailResponse(c *gin.Context, err *context.ServerError, data ...interfac
 		Data:    data,
 	})
 }
+
+func LoadRouter(mw ...gin.HandlerFunc) *gin.Engine {
+	g := gin.New()
+
+	if gin.Mode() == "debug" {
+		g.Use(gin.Logger())
+	}
+	g.Use(gin.Recovery())
+	g.Use(mw...)
+
+	toilet := g.Group("/v1/toilet")
+	{
+		toilet.GET("", GetToilet)
+		toilet.POST("", CreateToilet)
+	}
+
+	return g
+}

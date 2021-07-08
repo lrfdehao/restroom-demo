@@ -14,7 +14,7 @@ type GenId struct {
 }
 
 func (g GenId) Valid() *context.ServerError {
-	if len(g.Value) != 32 {
+	if len(g.Value) != 36 {
 		return common.ErrorVoInit
 	}
 

@@ -10,8 +10,8 @@ import (
 var DB *gorm.DB
 
 // Database 在中间件中初始化mysql链接,
-func Database(connString string) {
-	db, err := gorm.Open("mysql", connString)
+func Database() {
+	db, err := gorm.Open("mysql", "root:root@tcp(127.0.0.1:3306)/restroom?charset=utf8&parseTime=true")
 	db.LogMode(true)
 	// Error
 	if err != nil {

@@ -8,8 +8,9 @@ import (
 var _ context.IDomain = new(Toilet)
 
 const (
-	KSquat Kind = 1
-	KSit   Kind = 2
+	KSquat   Kind = 1
+	KSit     Kind = 2
+	KUnknown Kind = 3
 )
 
 const (
@@ -31,7 +32,7 @@ type (
 		// 获取未被占用的坑
 		GetUselessToilet(restroomId int) []*Toilet
 		// 查看坑的详情
-		GetToiletDetail(toiletId int) (Toilet, error)
+		GetToiletDetail(toiletId string) (Toilet, error)
 		// 修改坑状态
 		ChangeStatus(s Status) error
 	}
@@ -50,7 +51,7 @@ type (
 		// 删除坑
 		RemoveToilet(id int) error
 		// 根据Id获取坑
-		GetToiletById(toiletId int) (Toilet, error)
+		GetToiletById(toiletId string) (Toilet, error)
 	}
 
 	Toilet struct {
@@ -62,3 +63,26 @@ type (
 		CreatedTime      int64
 	}
 )
+
+func GetStatus(s int32) Status {
+
+	switch s {
+	case 1:
+		return SUsed
+	case 2:
+		return SUseless
+	default:
+		return SUnknown
+	}
+}
+
+func GetKind(k int32) Kind {
+	switch k {
+	case 1:
+		return KSquat
+	case 2:
+		return KSit
+	default:
+		return KUnknown
+	}
+}

@@ -5,6 +5,7 @@ import (
 	"demo/domain/context/toilet"
 	"demo/domain/context/vo"
 	"demo/domain/service"
+	"demo/infrastructure/gorm"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/go-basic/uuid"
@@ -12,24 +13,17 @@ import (
 	"time"
 )
 
-var (
-	api = &toiletApi{}
-)
-
 type toiletReq struct {
-	RestroomId string        `json:restroom_id`
-	Status     toilet.Status `json:status`
-	Kind       toilet.Kind   `json:kind`
-}
-
-type toiletApi struct {
-	repo toilet.IToiletRepo
+	RestroomId string        `json:"restroom_id"`
+	Status     toilet.Status `json:"status"`
+	Kind       toilet.Kind   `json:"kind"`
 }
 
 func CreateToilet(c *gin.Context) {
 	body, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
-		SendFailResponse(c, common.ErrToiletNotFound, nil)
+		SendFailResponse(c, common.ErrToiletNotFound)
+		return
 	}
 	var req toiletReq
 	_ = json.Unmarshal(body, &req)
@@ -38,17 +32,33 @@ func CreateToilet(c *gin.Context) {
 	errG := id.Valid()
 	if errG != nil {
 		SendFailResponse(c, errG, nil)
+		return
 	}
 
-	service.NewToiletImpl(api.repo).New(
-		toilet.Toilet{
-			ToiletId:         id,
-			RestroomId:       vo.GenId{Value: req.RestroomId},
-			Status:           req.Status,
-			Kind:             req.Kind,
-			LastModifiedTime: time.Nanosecond.Nanoseconds(),
-			CreatedTime:      time.Nanosecond.Nanoseconds(),
-		})
+	t := NewImpl().New(toilet.Toilet{
+		ToiletId:         id,
+		RestroomId:       vo.GenId{Value: req.RestroomId},
+		Status:           req.Status,
+		Kind:             req.Kind,
+		LastModifiedTime: time.Nanosecond.Nanoseconds(),
+		CreatedTime:      time.Nanosecond.Nanoseconds(),
+	})
 
-	SendOkResponse(c, nil)
+	SendOkResponse(c, t.ToiletId)
+}
+
+func GetToilet(c *gin.Context) {
+	toiletIdReq := c.Query("toilet_id")
+
+	detail, err := NewImpl().GetToiletDetail(toiletIdReq)
+	if err != nil {
+		SendFailResponse(c, common.ErrToiletNotFound)
+		return
+	}
+
+	SendOkResponse(c, detail)
+}
+
+func NewImpl() *service.ToiletImpl {
+	return service.NewToiletImpl(gorm.InitToiletRepo())
 }

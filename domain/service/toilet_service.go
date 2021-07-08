@@ -24,7 +24,7 @@ func (t ToiletImpl) GetUselessToilet(restroomId int) []*toilet.Toilet {
 	return t.toiletRepo.GetToiletByStatusAndRestroomId(toilet.SUseless, restroomId)
 }
 
-func (t ToiletImpl) GetToiletDetail(toiletId int) (toilet.Toilet, error) {
+func (t ToiletImpl) GetToiletDetail(toiletId string) (toilet.Toilet, error) {
 	return t.toiletRepo.GetToiletById(toiletId)
 }
 
