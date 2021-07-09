@@ -21,7 +21,6 @@ uploads/103
 vpp
 gen-*
 vendor
-go.sum
 output
 tmp
 api_docs
